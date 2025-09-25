@@ -1,4 +1,4 @@
-package com.bvbank.bvbank; // Đổi thành package name thật
+package com.bvbank.bvbank.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
