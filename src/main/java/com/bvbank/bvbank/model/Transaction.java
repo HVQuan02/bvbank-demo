@@ -20,10 +20,12 @@ public class Transaction {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "from_account_id")
+    @com.fasterxml.jackson.annotation.JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Account fromAccount;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "to_account_id")
+    @com.fasterxml.jackson.annotation.JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Account toAccount;
 
     @Column(nullable = false, precision = 18, scale = 2)
