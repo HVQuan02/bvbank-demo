@@ -99,4 +99,23 @@ public class TransactionServiceImpl implements TransactionService {
         }
         transactionRepository.deleteById(id);
     }
+
+    @Override
+public Long getTransactionCustomerId(Long transactionId) {
+    return transactionRepository.findById(transactionId)
+            .map(tx -> {
+                if (tx.getFromAccount() != null) return tx.getFromAccount().getCustomer().getId();
+                if (tx.getToAccount() != null) return tx.getToAccount().getCustomer().getId();
+                return null;
+            })
+            .orElseThrow(() -> new RuntimeException("Transaction not found"));
+}
+
+@Override
+public List<Transaction> getTransactionsByAccountId(Long accountId) {
+    Account account = accountRepository.findById(accountId)
+            .orElseThrow(() -> new RuntimeException("Account not found"));
+    return transactionRepository.findByFromAccountOrToAccount(account, account);
+}
+
 }

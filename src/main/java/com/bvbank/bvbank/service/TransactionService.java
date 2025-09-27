@@ -10,4 +10,7 @@ public interface TransactionService {
     Optional<Transaction> getTransactionById(Long id);
     Transaction createTransaction(Transaction transaction);
     void deleteTransaction(Long id);
+    Long getTransactionCustomerId(Long transactionId);
+List<Transaction> getTransactionsByAccountId(Long accountId);
+
 }
