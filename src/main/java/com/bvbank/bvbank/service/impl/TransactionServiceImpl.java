@@ -8,6 +8,10 @@ import com.bvbank.bvbank.repository.TransactionRepository;
 import com.bvbank.bvbank.service.TransactionService;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import com.bvbank.bvbank.spec.TransactionSpecification;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -116,6 +120,25 @@ public List<Transaction> getTransactionsByAccountId(Long accountId) {
     Account account = accountRepository.findById(accountId)
             .orElseThrow(() -> new RuntimeException("Account not found"));
     return transactionRepository.findByFromAccountOrToAccount(account, account);
+}
+
+@Override
+public Page<Transaction> searchTransactions(Long accountId,
+                                            TransactionType type,
+                                            BigDecimal minAmount,
+                                            BigDecimal maxAmount,
+                                            LocalDateTime fromDate,
+                                            LocalDateTime toDate,
+                                            Pageable pageable) {
+    Specification<Transaction> spec = TransactionSpecification.hasAccountId(accountId);
+
+    if (type != null) spec = spec.and(TransactionSpecification.hasType(type));
+    if (minAmount != null) spec = spec.and(TransactionSpecification.amountGreaterThanOrEqual(minAmount));
+    if (maxAmount != null) spec = spec.and(TransactionSpecification.amountLessThanOrEqual(maxAmount));
+    if (fromDate != null) spec = spec.and(TransactionSpecification.dateAfter(fromDate));
+    if (toDate != null) spec = spec.and(TransactionSpecification.dateBefore(toDate));
+
+    return transactionRepository.findAll(spec, pageable);
 }
 
 }
